@@ -1,11 +1,11 @@
 import css from './SearchBox.module.css'
 
-interface SeachBoxProps {
+interface SearchBoxProps {
     query: string;
     updateQuery: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function SeachBox({query, updateQuery}: SeachBoxProps) {
+export default function SearchBox({query, updateQuery}: SearchBoxProps) {
  return (<input
 	className={css.input}
   type="text"

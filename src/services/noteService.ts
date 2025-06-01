@@ -15,12 +15,12 @@ interface NewNote {
 const URL = 'https://notehub-public.goit.study/api/notes';
 
 export const fetchNotes = async(query: string, page: number): Promise<NotesHttpResponse> => { 
-    const parametrs = new URLSearchParams({
-        search: query,
+    const parameters = new URLSearchParams({
+        ...(query !=='' ? {search: query}:{}),
         page: page.toString(),
     })
     const response = await axios.get<NotesHttpResponse>(
-        `${URL}?${parametrs}`, {
+        `${URL}?${parameters}`, {
         headers: {
             Authorization: import.meta.env.VITE_NOTEHUB_TOKEN,
         },
@@ -28,10 +28,10 @@ export const fetchNotes = async(query: string, page: number): Promise<NotesHttpR
     return response.data;
 };
 
-export const createNote = async(newTodo: NewNote): Promise<Note> => {
+export const createNote = async(newNote: NewNote): Promise<Note> => {
     const response = await axios.post<Note>(
         `${URL}`, 
-        newTodo, {
+        newNote, {
         headers: {
             Authorization: import.meta.env.VITE_NOTEHUB_TOKEN,
         },

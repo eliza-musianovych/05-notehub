@@ -5,13 +5,13 @@ import { useId } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { createNote } from '../../services/noteService';
 
-interface OrderFormValues {
+interface NoteFormValues {
     title: string;
     content: string;
     tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
 }
 
-const initialValues: OrderFormValues = {
+const initialValues: NoteFormValues = {
   title: "",
   content: "",
   tag: "Todo",
@@ -27,17 +27,20 @@ export default function NoteForm({onClose}: NoteFormProps) {
   const mutation = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
-    queryClient.invalidateQueries();
+    queryClient.invalidateQueries({queryKey: ['notes']});
     },
   })
 
     const handleSubmit = (
-      values: OrderFormValues,
-      action: FormikHelpers<OrderFormValues>
+      values: NoteFormValues,
+      action: FormikHelpers<NoteFormValues>
     ) => { 
-      mutation.mutate(values);
-      action.resetForm();
-      onClose();
+      mutation.mutate(values, {
+        onSuccess: () => {
+          action.resetForm();
+          onClose()
+        },
+      });
     }
 
     const title = useId();
@@ -72,7 +75,7 @@ export default function NoteForm({onClose}: NoteFormProps) {
     <Field as="textarea"
       id={content}
       name="content"
-      rows="8"
+      rows={8}
       className={css.textarea}
     />
     <ErrorMessage name="content" component="span" className={css.error} />
@@ -100,7 +103,7 @@ export default function NoteForm({onClose}: NoteFormProps) {
     <button
       type="submit"
       className={css.submitButton}
-      disabled={false}
+      disabled={mutation.isPending}
     >
       Create note
     </button>

@@ -2,7 +2,7 @@ import css from './App.module.css'
 import NoteList from '../NoteList/NoteList'
 import NoteModal from '../NoteModal/NoteModal'
 import Pagination from '../Pagination/Pagination'
-import SeachBox from '../SearchBox/SearchBox'
+import SearchBox from '../SearchBox/SearchBox'
 import Loader from '../Loader/Loader'
 import ErrorMessage from '../ErrorMessage/ErrorMessage'
 import { useState } from 'react'
@@ -11,12 +11,13 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { fetchNotes } from '../../services/noteService'
 
 export default function App() {
-  const [query, setQuery] = useState<string>(' ');
+  const [query, setQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [isCreateNote, setIsCreateNote] =useState<boolean>(false);
 
   const updateQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(event.target.value);
+        setPage(1);
     };
     
     const [debouncedQuery] = useDebounce(query, 300);
@@ -33,7 +34,7 @@ export default function App() {
   return (
     <div className={css.app}>
 	      <header className={css.toolbar}>
-          <SeachBox query={query} updateQuery={updateQuery}/>
+          <SearchBox query={query} updateQuery={updateQuery}/>
           {data?.totalPages && 
           data.totalPages > 1 && 
           <Pagination 
